@@ -209,7 +209,7 @@ function end_game() {
     xhr.open("POST", "leaderboard.php" + params, true);
     xhr.send(null);
 
-    setTimout(function () {
+    setTimeout(function () {
         leaderboard.location.reload();
     }, 500);
 }
