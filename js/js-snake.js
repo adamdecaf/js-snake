@@ -4,6 +4,7 @@
  */
 
 var score_board = document.querySelector("#scoreboard");
+var timer_elm = document.querySelector("#timer");
 var canvas = document.querySelector("#arena");
 var arena = canvas.getContext("2d");
 
@@ -25,6 +26,9 @@ var snake_height = 3;
 
 var target_width = 3;
 var target_height = 3;
+
+var game_length = 10;
+var game_length_ms = game_length * 1000;
 
 var black = "rgb(0, 0, 0)";
 var red = "rgb(200, 0, 0)";
@@ -118,6 +122,7 @@ function check_for_overlap(target1, target2) {
 
 /**
    TODO:
+   - Start button for games
    - Timed games
    - Leaderboard
    - Multiple Targets
@@ -131,9 +136,9 @@ function check_for_overlap(target1, target2) {
      - Has to check for collisions with all items in the array on each move. (Costly?)
 **/
 window.onload = function (e) {
-    draw_initial_snake();
-    draw_random_target();
-    start_collision_checks();
+    // draw_initial_snake();
+    // draw_random_target();
+    //start_collision_checks();
 }
 
 window.onkeydown = function (e) {
@@ -160,4 +165,38 @@ function start_collision_checks() {
             draw_random_target();
         }
     }, 50)
+}
+
+function start_game() {
+    score_board.innerHTML = 0;
+
+    clearTimeout(game_end_timer);
+    clearInterval(timer);
+
+    timer_elm.innerHTML = game_length;
+
+    draw_initial_snake();
+    draw_random_target();
+    start_collision_checks();
+
+    start_timer();
+}
+
+function end_game() {
+    timer_elm.innerHTML = 0;
+    alert("Game over! Your score is: " + score_board.innerHTML);
+}
+
+var game_end_timer;
+var seconds_tick;
+
+function start_timer() {
+    game_end_timer = setTimeout(function () {
+        end_game();
+        window.clearInterval(timer);
+    }, game_length_ms);
+
+    timer = setInterval(function (){
+        timer_elm.innerHTML -= 1;
+    }, 1000);
 }
