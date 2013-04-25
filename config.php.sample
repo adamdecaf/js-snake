@@ -3,7 +3,7 @@
  * JS-Snake
  * Adam Shannon
  */
-require_once "libs/mysql.php";
+require_once "lib/mysql.php";
 
 $hostname = "";
 $username = "";
