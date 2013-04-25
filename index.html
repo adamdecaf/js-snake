@@ -11,10 +11,15 @@
     <div>
       Score: <span id="scoreboard">0</span> |
       Time Left: <span id="timer">0</span>
-      <input type="button" onclick="start_game();" value="Start Game!" />
+      <input type="button" onclick="start_game();" value="Start Game!" /> |
+      <a href="javascript:void(0);" onclick="window.location.reload();">Leaderboard</a>
     </div>
 
     <canvas id="arena">Your browser sucks..</canvas>
+
+    <br />
+
+    <iframe id="leaderboard" src="leaderboard.php"></iframe>
 
   <script src="js/js-snake.js" /></script>
   </body>

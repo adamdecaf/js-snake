@@ -3,6 +3,10 @@
  * Adam Shannon
  */
 
+a {
+    color: #000;
+}
+
 body {
     background-color: #CCC;
 }
@@ -11,5 +15,16 @@ canvas#arena {
     background-color: #FFF;
     border: 1px solid #000;
     height: 500px;
-    width: 1100px;
+    width: 1000px;
+}
+
+iframe {
+    background-color: #FFF;
+    height: 500px;
+    width: 1000px;
+}
+
+table {
+    text-align: center;
+    width: 100%;
 }

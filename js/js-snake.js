@@ -3,13 +3,32 @@
  * Adam Shannon
  */
 
+/**
+   TODO:
+   - Start button for games [x]
+   - Timed games [x]
+   - Leaderboard
+   - Multiple Targets
+   - Multiplayer
+   - Show all targets when game is over?
+
+   BUGS:
+   - When a target is cleared, it seems to wipe out a larger rectangle than it should.
+   - Snake doesn't have collisions with itself.
+   - Snake should show a full path?
+     - Stored as a capped array whose cap increases at each item you pick up?
+     - Has to check for collisions with all items in the array on each move. (Costly?)
+   - Canvas isn't cleared between games.
+**/
+
+var leaderboard = document.querySelector("#leaderboard");
 var score_board = document.querySelector("#scoreboard");
 var timer_elm = document.querySelector("#timer");
 var canvas = document.querySelector("#arena");
 var arena = canvas.getContext("2d");
 
 var min_x = 1;
-var max_x = 295;
+var max_x = 280;
 var min_y = 1;
 var max_y = 145;
 
@@ -26,6 +45,8 @@ var snake_height = 3;
 
 var target_width = 3;
 var target_height = 3;
+
+var moves_made = 0;
 
 var game_length = 10;
 var game_length_ms = game_length * 1000;
@@ -120,38 +141,29 @@ function check_for_overlap(target1, target2) {
 }
 
 
-/**
-   TODO:
-   - Start button for games
-   - Timed games
-   - Leaderboard
-   - Multiple Targets
-   - Multiplayer
-
-   BUGS:
-   - When a target is cleared, it seems to wipe out a larger rectangle than it should.
-   - Snake doesn't have collisions with itself.
-   - Snake should show a full path?
-     - Stored as a capped array whose cap increases at each item you pick up?
-     - Has to check for collisions with all items in the array on each move. (Costly?)
-**/
-window.onload = function (e) {
-    // draw_initial_snake();
-    // draw_random_target();
-    //start_collision_checks();
-}
-
 window.onkeydown = function (e) {
     var key = get_key(e);
     if (key == left) {
         move_snake(-snake_dx, 0);
+        increment_moves()
+        return false;
     } else if (key == up) {
         move_snake(0, -snake_dy);
+        increment_moves()
+        return false;
     } else if (key == down) {
         move_snake(0, snake_dy);
+        increment_moves()
+        return false;
     } else if (key == right) {
         move_snake(snake_dx, 0);
+        increment_moves()
+        return false;
     }
+}
+
+function increment_moves() {
+    moves_made += 1;
 }
 
 function start_collision_checks() {
@@ -184,7 +196,22 @@ function start_game() {
 
 function end_game() {
     timer_elm.innerHTML = 0;
-    alert("Game over! Your score is: " + score_board.innerHTML);
+    var name = prompt("Game over! Your score is: " + score_board.innerHTML + "\nWhat's your name?");
+    var score = score_board.innerHTML;
+    var grid_spots_moved = moves_made;
+    var targets_hit = score;
+    var game_duration = game_length;
+
+    var params = "?score=" + score + "&name=" + encodeURIComponent(name) + "&grid_spots_moved=" + grid_spots_moved +
+                 "&targets_hit=" + targets_hit + "&game_duration=" + game_duration;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "leaderboard.php" + params, true);
+    xhr.send(null);
+
+    setTimout(function () {
+        leaderboard.location.reload();
+    }, 500);
 }
 
 var game_end_timer;
