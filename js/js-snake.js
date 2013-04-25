@@ -210,7 +210,7 @@ function end_game() {
     xhr.send(null);
 
     setTimeout(function () {
-        leaderboard.location.reload();
+        leaderboard.src = leaderboard.src;
     }, 500);
 }
 
