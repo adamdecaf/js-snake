@@ -23,7 +23,7 @@ if (empty($_GET)) {
 function display_leaderboard() {
          echo "<a href='leaderboard.php'>Refresh</a><br />";
 
-         $rows = MySQL::search("SELECT * FROM `js_snake`.`leaderboard` ORDER BY `score` DESC, `grid_spots_moved` ASC LIMIT 25;");
+         $rows = MySQL::search("SELECT * FROM `js_snake`.`leaderboard` ORDER BY `score` DESC, `grid_spots_moved` ASC LIMIT 20;");
 
          $scores = "";
          foreach ($rows as $row) {
