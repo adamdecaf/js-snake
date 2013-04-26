@@ -32,7 +32,7 @@ function display_leaderboard() {
                  $scores .= "<td>" . $row["name"] . "</td>";
                  $scores .= "<td>" . $row["grid_spots_moved"] . "</td>";
                  //$scores .= "<td>" . $row["targets_hit"] . "</td>";
-                 $scores .= "<td>" . ($row["grid_spots_moved"] / $row["score"]) . "</td>";
+                 $scores .= "<td>" . round(($row["grid_spots_moved"] / $row["score"]), 2) . "</td>";
                  $scores .= "<td>" . $row["game_duration"] . "</td>";
                  $scores .= "<td>" . $row["time"] . "</td>";
                  $scores .= "</tr>";
