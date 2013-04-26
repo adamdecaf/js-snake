@@ -7,12 +7,15 @@
    TODO:
    - Start button for games [x]
    - Timed games [x]
-   - Leaderboard
+   - Leaderboard [x]
    - Multiple Targets
+     -- target that is moved far away from you for 2x points.
+     -- target that gives you more time.
    - Multiplayer
    - Show all targets when game is over?
 
    BUGS:
+   - You can go off the edge..
    - When a target is cleared, it seems to wipe out a larger rectangle than it should.
    - Snake doesn't have collisions with itself.
    - Snake should show a full path?
@@ -28,9 +31,9 @@ var canvas = document.querySelector("#arena");
 var arena = canvas.getContext("2d");
 
 var min_x = 1;
-var max_x = 280;
+var max_x = 297;
 var min_y = 1;
-var max_y = 145;
+var max_y = 147;
 
 var left = 37;
 var up = 38;
@@ -104,7 +107,16 @@ function clear_last_snake() {
 }
 
 function move_snake(dx, dy) {
-    draw_snake(prev_snake_x + dx, prev_snake_y + dy, snake_width, snake_height, black);
+    var proposedX = prev_snake_x + dx;
+    var proposedY = prev_snake_y + dy;
+
+    if (!touching_edge_of_arena(proposedX, proposedY)) {
+        draw_snake(proposedX, proposedY, snake_width, snake_height, black);
+    }
+}
+
+function touching_edge_of_arena(proposedX, proposedY) {
+    return (proposedX <= 0) || (proposedY <= 0) || (proposedX >= max_x) || (proposedY >= max_y);
 }
 
 function draw_initial_snake() {
