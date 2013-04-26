@@ -24,6 +24,7 @@
    - Canvas isn't cleared between games.
 **/
 
+var special_tokens = document.querySelector("#special_tokens");
 var leaderboard = document.querySelector("#leaderboard");
 var score_board = document.querySelector("#scoreboard");
 var timer_elm = document.querySelector("#timer");
@@ -341,6 +342,10 @@ function increment_score(n) {
     score_board.innerHTML = parseInt(score_board.innerHTML) + n;
 }
 
+function update_special_targets_collected(name) {
+    special_tokens.innerHTML += name + "<br />";
+}
+
 function start_collision_checks_for_red() {
     window.setInterval(function () {
         var snake_coords = {x: curr_snake_x, y: curr_snake_y, width: snake_width, height: snake_height};
@@ -361,12 +366,13 @@ function handle_non_red_collision(score, color) {
     clear_target_by_color(color);
 }
 
-function found_collision(target_x, target_y, score, color) {
+function found_collision(target_x, target_y, score, color, name) {
     var snake_coords = {x: curr_snake_x, y: curr_snake_y, width: snake_width, height: snake_height};
     var target_coords = {x: target_x, y: target_y, width: target_width, height: target_height};
     if (check_for_overlap(snake_coords, target_coords) == true) {
         handle_non_red_collision(score, color);
         clear_target_by_color(color);
+        update_special_targets_collected(name);
     }
 }
 
@@ -379,12 +385,12 @@ function start_collision_checks_for_other_targets() {
         var pink_coords   = {x: curr_pink_target_x, y: curr_pink_target_y};
         var gray_coords   = {x: curr_gray_target_x, y: curr_gray_target_y};
 
-        found_collision(blue_coords.x, blue_coords.y, blue_score, blue)
-        found_collision(green_coords.x, green_coords.y, green_score, green)
-        found_collision(orange_coords.x, orange_coords.y, orange_score, orange)
-        found_collision(purple_coords.x, purple_coords.y, purple_score, purple)
-        found_collision(pink_coords.x, pink_coords.y, pink_score, pink)
-        found_collision(gray_coords.x, gray_coords.y, gray_score, gray)
+        found_collision(blue_coords.x, blue_coords.y, blue_score, blue, "Blue");
+        found_collision(green_coords.x, green_coords.y, green_score, green, "Green");
+        found_collision(orange_coords.x, orange_coords.y, orange_score, orange, "Orange");
+        found_collision(purple_coords.x, purple_coords.y, purple_score, purple, "Purple");
+        found_collision(pink_coords.x, pink_coords.y, pink_score, pink, "Pink");
+        found_collision(gray_coords.x, gray_coords.y, gray_score, gray, "Gray");
     }, 50);
 }
 
@@ -406,8 +412,9 @@ function start_timers_for_non_red() {
 
 // Gameplay oriented functions
 function start_game() {
-    score_board.innerHTML = 0;
     moves_made = 0;
+    score_board.innerHTML = 0;
+    special_tokens.innerHTML = "Special Tokens Collected:<br />";
 
     clearTimeout(game_end_timer);
     clearInterval(timer);
