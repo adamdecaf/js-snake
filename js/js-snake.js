@@ -8,14 +8,14 @@
    - Start button for games [x]
    - Timed games [x]
    - Leaderboard [x]
-   - Multiple Targets
-     -- target that is moved far away from you for 2x points.
-     -- target that gives you more time.
+   - Multiple Targets [x]
    - Multiplayer
-   - Show all targets when game is over?
+   - Log back to the leaderboard how many of each token were grabbed
+   - Report back the game state every second
+     - To record how players move and respond to special targets
 
    BUGS:
-   - You can go off the edge..
+   - You can go off the edge.. [x]
    - When a target is cleared, it seems to wipe out a larger rectangle than it should.
    - Snake doesn't have collisions with itself.
    - Snake should show a full path?
