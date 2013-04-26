@@ -18,6 +18,21 @@ canvas#arena {
     width: 1000px;
 }
 
+div#target_legend {
+    background-color: #FFF;
+    border: 1px solid #000;
+    border-radius: 5px;
+    float:right;
+    max-width: 200px;
+    padding: 10px;
+}
+
+div#target_legend h3 {
+    margin: 0px;
+    padding: 0px;
+    text-decoration: underline;
+}
+
 iframe {
     background-color: #FFF;
     height: 500px;

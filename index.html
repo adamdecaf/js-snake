@@ -8,11 +8,58 @@
   <body>
     <h3>JS Snake</h3>
 
+    <div id="target_legend">
+      <h3>Target Legend</h3>
+      <table>
+        <thead>
+          <tr>
+            <td>Color</td>
+            <td>Points</td>
+            <td>Visibility</td>
+          </tr>
+        </thead>
+        <tr>
+          <td>Red</td>
+          <td>1pt</td>
+          <td>1/1 Games</td>
+        </tr>
+        <tr>
+          <td>Blue</td>
+          <td>2pts</td>
+          <td>1/2 Games</td>
+        </tr>
+        <tr>
+          <td>Green</td>
+          <td>3pts</td>
+          <td>1/5 Games</td>
+        </tr>
+        <tr>
+          <td>Orange</td>
+          <td>4pts</td>
+          <td>1/9 Games</td>
+        </tr>
+        <tr>
+          <td>Purple</td>
+          <td>5pts</td>
+          <td>1/18 Games</td>
+        </tr>
+        <tr>
+          <td>Pink</td>
+          <td>10pts</td>
+          <td>1/180 Games</td>
+        </tr>
+        <tr>
+          <td>Gray</td>
+          <td>1000pts</td>
+          <td>1/180,000 Games</td>
+        </tr>
+      </table>
+    </div>
+
     <div>
       Score: <span id="scoreboard">0</span> |
       Time Left: <span id="timer">0</span>
-      <input type="button" onclick="start_game();" value="Start Game!" /> |
-      <a href="javascript:void(0);" onclick="window.location.reload();">Leaderboard</a>
+      <input type="button" onclick="start_game();" value="Start Game!" />
     </div>
 
     <canvas id="arena">Your browser sucks..</canvas>
