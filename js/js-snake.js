@@ -181,6 +181,7 @@ function start_collision_checks() {
 
 function start_game() {
     score_board.innerHTML = 0;
+    moves_made = 0;
 
     clearTimeout(game_end_timer);
     clearInterval(timer);
