@@ -104,6 +104,13 @@ var max_lifetime_pink = 10000;
 var min_lifetime_gray = 1;
 var max_lifetime_gray = 1000000;
 
+var blue_timer;
+var green_timer;
+var orange_timer;
+var purple_timer;
+var pink_timer;
+var gray_timer;
+
 // Common, helper methods
 function random_int(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -152,10 +159,15 @@ var curr_pink_target_y = 0;
 var curr_gray_target_x = 0;
 var curr_gray_target_y = 0;
 
+function clear_arena() {
+    arena.clearRect(0, 0, max_x + 10, max_y + 10)
+}
+
 function update_color_xy(x, y, color) {
     if (color == red) {
         curr_red_target_x = x;
         curr_red_target_y = y;
+
     }
 
     if (color == blue) {
@@ -203,6 +215,7 @@ function clear_target_by_color(color) {
 
 function clear_target(x, y) {
     arena.clearRect(x, y, target_width, target_height);
+    update_color_xy(-100, -100);
 }
 
 function clear_red_target() {
@@ -360,7 +373,6 @@ function start_collision_checks_for_red() {
     }, 50);
 }
 
-
 function handle_non_red_collision(score, color) {
     increment_score(score);
     clear_target_by_color(color);
@@ -395,23 +407,27 @@ function start_collision_checks_for_other_targets() {
 }
 
 function start_timer_for_non_red(color, min_wait, max_wait) {
-    setTimeout(function () {
+    return setTimeout(function () {
         var p = random_xy();
         draw_target(p.x, p.y, color)
     }, random_int(min_wait, max_wait) * millis);
 }
 
 function start_timers_for_non_red() {
-    start_timer_for_non_red(blue, min_lifetime_blue, max_lifetime_blue);
-    start_timer_for_non_red(green, min_lifetime_green, max_lifetime_green);
-    start_timer_for_non_red(orange, min_lifetime_orange, max_lifetime_orange);
-    start_timer_for_non_red(purple, min_lifetime_purple, max_lifetime_purple);
-    start_timer_for_non_red(pink, min_lifetime_pink, max_lifetime_pink);
-    start_timer_for_non_red(gray, min_lifetime_gray, max_lifetime_gray);
+    blue_timer = start_timer_for_non_red(blue, min_lifetime_blue, max_lifetime_blue);
+    green_timer = start_timer_for_non_red(green, min_lifetime_green, max_lifetime_green);
+    orange_timer = start_timer_for_non_red(orange, min_lifetime_orange, max_lifetime_orange);
+    purple_timer = start_timer_for_non_red(purple, min_lifetime_purple, max_lifetime_purple);
+    pink_timer = start_timer_for_non_red(pink, min_lifetime_pink, max_lifetime_pink);
+    gray_timer = start_timer_for_non_red(gray, min_lifetime_gray, max_lifetime_gray);
+
+    console.log(blue_timer);
 }
 
 // Gameplay oriented functions
 function start_game() {
+    clear_arena();
+    end_game(false);
     moves_made = 0;
     score_board.innerHTML = 0;
     special_tokens.innerHTML = "Special Tokens Collected:<br />";
@@ -422,6 +438,7 @@ function start_game() {
     timer_elm.innerHTML = game_length;
 
     draw_initial_snake();
+    clear_target_locations();
     clear_red_target();
     draw_red_target();
 
@@ -432,24 +449,45 @@ function start_game() {
     start_timers_for_non_red();
 }
 
-function end_game() {
+function end_game(report) {
     timer_elm.innerHTML = 0;
-    var name = prompt("Game over! Your score is: " + score_board.innerHTML + "\nWhat's your name?");
-    var score = score_board.innerHTML;
-    var grid_spots_moved = moves_made;
-    var targets_hit = score;
-    var game_duration = game_length;
 
-    var params = "?score=" + score + "&name=" + encodeURIComponent(name) + "&grid_spots_moved=" + grid_spots_moved +
-                 "&targets_hit=" + targets_hit + "&game_duration=" + game_duration;
+    if (report) {
+        var name = prompt("Game over! Your score is: " + score_board.innerHTML + "\nWhat's your name?");
+        var score = score_board.innerHTML;
+        var grid_spots_moved = moves_made;
+        var targets_hit = score;
+        var game_duration = game_length;
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "leaderboard.php" + params, true);
-    xhr.send(null);
+        clear_all_non_red();
+        clear_non_red_timers();
+
+        var params = "?score=" + score + "&name=" + encodeURIComponent(name) + "&grid_spots_moved=" + grid_spots_moved +
+            "&targets_hit=" + targets_hit + "&game_duration=" + game_duration;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "leaderboard.php" + params, true);
+        xhr.send(null);
+    }
 
     setTimeout(function () {
         leaderboard.src = leaderboard.src;
     }, 500);
+}
+
+function clear_target_locations() {
+    curr_blue_target_x = 0;
+    curr_blue_target_y = 0;
+    curr_green_target_x = 0;
+    curr_green_target_y = 0;
+    curr_orange_target_x = 0;
+    curr_orange_target_y = 0;
+    curr_purple_target_x = 0;
+    curr_purple_target_y = 0;
+    curr_pink_target_x = 0;
+    curr_pink_target_y = 0;
+    curr_gray_target_x = 0;
+    curr_gray_target_y = 0;
 }
 
 function clear_all_non_red() {
@@ -461,12 +499,23 @@ function clear_all_non_red() {
     clear_target_by_color(gray);
 }
 
+function clear_non_red_timers() {
+    clearTimeout(blue_timer);
+    clearTimeout(green_timer);
+    clearTimeout(orange_timer);
+    clearTimeout(purple_timer);
+    clearTimeout(pink_timer);
+    clearTimeout(gray_timer);
+
+    console.log(gray_timer);
+}
+
 var game_end_timer;
 var seconds_tick;
 
 function start_timer() {
     game_end_timer = setTimeout(function () {
-        end_game();
+        end_game(true);
         window.clearInterval(timer);
     }, game_length_ms);
 
