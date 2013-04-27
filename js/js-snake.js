@@ -424,8 +424,17 @@ function start_timers_for_non_red() {
     console.log(blue_timer);
 }
 
+function hide_start_button() {
+    var elm = document.querySelector("#start_button")
+    elm.disabled = "disabled";
+    setTimeout(function (){
+        elm.disabled = "";
+    }, game_length_ms)
+}
+
 // Gameplay oriented functions
 function start_game() {
+    hide_start_button();
     clear_arena();
     end_game(false);
     moves_made = 0;
