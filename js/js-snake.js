@@ -41,8 +41,8 @@ var up = 38;
 var right = 39;
 var down = 40;
 
-var snake_dx = 2;
-var snake_dy = 2;
+var snake_dx = 3;
+var snake_dy = 3;
 
 var snake_width = 3;
 var snake_height = 3;
