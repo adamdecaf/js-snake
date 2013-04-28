@@ -57,6 +57,7 @@ var game_length_ms = game_length * 1000;
 
 var black  = "rgb(0, 0, 0)";
 var red    = "rgb(200, 0, 0)";
+var yellow = "rgb(223, 255, 0)";
 var blue   = "rgb(0, 0, 200)";
 var green  = "rgb(0, 200, 0)";
 var orange = "rgb(200, 100, 0)";
@@ -67,6 +68,7 @@ var gray   = "rgb(100, 100, 100)";
 /**
  * Scores
  * Red:    Constant       - 1pt     1/1   games
+ * Yellow  1 - 30sec      - 1pt     1/1   games
  * Blue:   1 - 120sec     - 2pt     1/2   games
  * Green:  1 - 300sec     - 3pt     1/5   games
  * Orange: 1 - 500sec     - 4pt     1/9   games
@@ -76,6 +78,7 @@ var gray   = "rgb(100, 100, 100)";
  */
 
 var red_score    = 1;
+var yellow_score = 1;
 var blue_score   = 2;
 var green_score  = 3;
 var orange_score = 4;
@@ -85,6 +88,9 @@ var gray_score   = 1000;
 
 var millis = 1000;
 var max_target_lifetime = 6 * millis;
+
+var min_lifetime_yellow = 1;
+var max_lifetime_yellow = 20;
 
 var min_lifetime_blue = 1;
 var max_lifetime_blue = 120;
@@ -104,6 +110,7 @@ var max_lifetime_pink = 10000;
 var min_lifetime_gray = 1;
 var max_lifetime_gray = 1000000;
 
+var yellow_timer;
 var blue_timer;
 var green_timer;
 var orange_timer;
@@ -141,6 +148,9 @@ var curr_snake_y = 0;
 var curr_red_target_x = 0;
 var curr_red_target_y = 0;
 
+var curr_yellow_target_x = 0;
+var curr_yellow_target_y = 0;
+
 var curr_blue_target_x = 0;
 var curr_blue_target_y = 0;
 
@@ -167,7 +177,11 @@ function update_color_xy(x, y, color) {
     if (color == red) {
         curr_red_target_x = x;
         curr_red_target_y = y;
+    }
 
+    if (color == yellow) {
+        curr_yellow_target_x = x;
+        curr_yellow_target_y = y;
     }
 
     if (color == blue) {
@@ -205,6 +219,7 @@ function clear_target_by_color(color) {
     update_color_xy(-100, -100, color);
 
     if (color == red)    clear_target(curr_red_target_x, curr_red_target_y);
+    if (color == yellow) clear_target(curr_yellow_target_x, curr_yellow_target_y);
     if (color == blue)   clear_target(curr_blue_target_x, curr_blue_target_y);
     if (color == green)  clear_target(curr_green_target_x, curr_green_target_y);
     if (color == orange) clear_target(curr_orange_target_x, curr_orange_target_y);
@@ -227,6 +242,12 @@ function start_countdown_to_clear(color) {
         setTimeout(function(x, y) {
             clear_target(x, y);
         }, max_target_lifetime, curr_blue_target_x, curr_blue_target_y);
+    }
+
+    if (color == yellow) {
+        setInterval(function(x, y) {
+            clear_target(x, y);
+        }, max_target_lifetime, curr_yellow_target_x, curr_yellow_target_y);
     }
 
     if (color == green) {
@@ -370,7 +391,7 @@ function start_collision_checks_for_red() {
             clear_red_target();
             draw_red_target();
         }
-    }, 50);
+    }, 20);
 }
 
 function handle_non_red_collision(score, color) {
@@ -391,6 +412,7 @@ function found_collision(target_x, target_y, score, color, name) {
 function start_collision_checks_for_other_targets() {
     window.setInterval(function () {
         var blue_coords   = {x: curr_blue_target_x, y: curr_blue_target_y};
+        var yellow_coords = {x: curr_yellow_target_x, y: curr_yellow_target_y};
         var green_coords  = {x: curr_green_target_x, y: curr_green_target_y};
         var orange_coords = {x: curr_orange_target_x, y: curr_orange_target_y};
         var purple_coords = {x: curr_purple_target_x, y: curr_purple_target_y};
@@ -398,6 +420,7 @@ function start_collision_checks_for_other_targets() {
         var gray_coords   = {x: curr_gray_target_x, y: curr_gray_target_y};
 
         found_collision(blue_coords.x, blue_coords.y, blue_score, blue, "Blue");
+        found_collision(yellow_coords.x, yellow_coords.y, yellow_score, yellow, "Yellow");
         found_collision(green_coords.x, green_coords.y, green_score, green, "Green");
         found_collision(orange_coords.x, orange_coords.y, orange_score, orange, "Orange");
         found_collision(purple_coords.x, purple_coords.y, purple_score, purple, "Purple");
@@ -407,14 +430,22 @@ function start_collision_checks_for_other_targets() {
 }
 
 function start_timer_for_non_red(color, min_wait, max_wait) {
-    return setTimeout(function () {
-        var p = random_xy();
-        draw_target(p.x, p.y, color)
-    }, random_int(min_wait, max_wait) * millis);
+    if (color == yellow) {
+        return setInterval(function () {
+            var p = random_xy();
+            draw_target(p.x, p.y, color)
+        }, random_int(min_wait, max_wait) * millis);
+    } else {
+        return setTimeout(function () {
+            var p = random_xy();
+            draw_target(p.x, p.y, color)
+        }, random_int(min_wait, max_wait) * millis);
+    }
 }
 
 function start_timers_for_non_red() {
     blue_timer = start_timer_for_non_red(blue, min_lifetime_blue, max_lifetime_blue);
+    yellow_timer = start_timer_for_non_red(yellow, min_lifetime_yellow, max_lifetime_yellow);
     green_timer = start_timer_for_non_red(green, min_lifetime_green, max_lifetime_green);
     orange_timer = start_timer_for_non_red(orange, min_lifetime_orange, max_lifetime_orange);
     purple_timer = start_timer_for_non_red(purple, min_lifetime_purple, max_lifetime_purple);
@@ -487,6 +518,8 @@ function end_game(report) {
 function clear_target_locations() {
     curr_blue_target_x = 0;
     curr_blue_target_y = 0;
+    curr_yellow_target_x = 0;
+    curr_yellow_target_y = 0;
     curr_green_target_x = 0;
     curr_green_target_y = 0;
     curr_orange_target_x = 0;
@@ -501,6 +534,7 @@ function clear_target_locations() {
 
 function clear_all_non_red() {
     clear_target_by_color(blue);
+    clear_target_by_color(yellow);
     clear_target_by_color(green);
     clear_target_by_color(orange);
     clear_target_by_color(purple);
@@ -510,13 +544,12 @@ function clear_all_non_red() {
 
 function clear_non_red_timers() {
     clearTimeout(blue_timer);
+    clearInterval(yellow_timer);
     clearTimeout(green_timer);
     clearTimeout(orange_timer);
     clearTimeout(purple_timer);
     clearTimeout(pink_timer);
     clearTimeout(gray_timer);
-
-    console.log(gray_timer);
 }
 
 var game_end_timer;
