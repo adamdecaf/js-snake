@@ -7,10 +7,8 @@
    TODO:
    - Start button for games [x]
    - Timed games [x]
-   - Leaderboard [x]
    - Multiple Targets [x]
    - Multiplayer
-   - Log back to the leaderboard how many of each token were grabbed
    - Report back the game state every second
      - To record how players move and respond to special targets
 
@@ -25,7 +23,6 @@
 **/
 
 var special_tokens = document.querySelector("#special_tokens");
-var leaderboard = document.querySelector("#leaderboard");
 var score_board = document.querySelector("#scoreboard");
 var timer_elm = document.querySelector("#timer");
 var canvas = document.querySelector("#arena");
@@ -493,26 +490,11 @@ function end_game(report) {
     timer_elm.innerHTML = 0;
 
     if (report) {
-        var name = prompt("Game over! Your score is: " + score_board.innerHTML + "\nWhat's your name?");
-        var score = score_board.innerHTML;
-        var grid_spots_moved = moves_made;
-        var targets_hit = score;
-        var game_duration = game_length;
+      prompt("Game over! Your score is: " + score_board.innerHTML);
 
         clear_all_non_red();
         clear_non_red_timers();
-
-        var params = "?score=" + score + "&name=" + encodeURIComponent(name) + "&grid_spots_moved=" + grid_spots_moved +
-            "&targets_hit=" + targets_hit + "&game_duration=" + game_duration;
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "leaderboard.php" + params, true);
-        xhr.send(null);
     }
-
-    setTimeout(function () {
-        leaderboard.src = leaderboard.src;
-    }, 500);
 }
 
 function clear_target_locations() {
