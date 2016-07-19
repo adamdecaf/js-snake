@@ -490,7 +490,7 @@ function end_game(report) {
     timer_elm.innerHTML = 0;
 
     if (report) {
-      prompt("Game over! Your score is: " + score_board.innerHTML);
+      alert("Game over! Your score is: " + score_board.innerHTML);
 
         clear_all_non_red();
         clear_non_red_timers();
